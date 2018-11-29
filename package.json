@@ -1,0 +1,17 @@
+{
+  "name": "lights_on",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "local-devices": "^1.1.1",
+    "network-list": "^1.1.5",
+    "node-fetch": "^2.3.0",
+    "node-ping": "^0.1.0"
+  }
+}
