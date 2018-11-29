@@ -85,8 +85,7 @@ async function decideLights(currentValue, paramExecutionIdx, paramNOffs) {
     } else {
         nOffs += 1;
     }
-
-    console.log(JSON.stringify({
+    const eventMsg = {
         event: 'decision',
         timestamp: (new Date()).toISOString(),
         executionIdx,
@@ -96,7 +95,11 @@ async function decideLights(currentValue, paramExecutionIdx, paramNOffs) {
         overrideHours,
         hourIsValid,
         matchedDeviceNames,
-    }));
+    };
+    for (let deviceName of matchedDeviceNames) {
+        eventMsg[`device-${deviceName}-on`] = true;
+    }
+    console.log(JSON.stringify(eventMsg));
 
     if (nOffs < 12) {
         shouldBeOn = true;
