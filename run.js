@@ -7,7 +7,7 @@ const webhookKey = process.env["IFTTT_WEBHOOK"];
 
 const macAddresses = {};
 
-const waitFor = 1000 * 15;
+const waitFor = 1000 * 30;
 
 Object.keys(process.env).filter(envVar=>envVar.startsWith('MAC_ADDRESS_'))
     .forEach(key=>{
@@ -73,8 +73,9 @@ function isHourValid() {
     return onHours.indexOf(currentHours) > -1;
 }
 
-async function decideLights(currentValue, paramExecutionIdx) {
+async function decideLights(currentValue, paramExecutionIdx, paramNOffs) {
     const executionIdx = paramExecutionIdx || 0;
+    const nOffs = paramNOffs || 0;
     const hourIsValid = isHourValid();
     const matchedDevices = await listUpHosts();
     let overrideHours = false;
@@ -89,9 +90,28 @@ async function decideLights(currentValue, paramExecutionIdx) {
             }
         });
 
-    const shouldBeOn = (matchedDevices.length > 0 && hourIsValid) || overrideHours;
+    let shouldBeOn = (matchedDevices.length > 0 && hourIsValid) || overrideHours;
 
-    console.log(`${executionIdx} ${(new Date()).toISOString()} ${shouldBeOn ? '🌕' : '🌑'} ${overrideHours ? '❗ ' : ''}${hourIsValid ? '✅' : '❎'} (${matchedDeviceNames.join(', ')})`)
+    if (shouldBeOn) {
+        nOffs = 0;
+    } else {
+        nOffs += 1;
+    }
+
+    console.log(JSON.stringify({
+        timestamp: new Date()).toISOString(),
+        executionIdx,
+        shouldBeOn,
+        nOffs,
+        currentValue,
+        overrideHours,
+        hourIsValid,
+        matchedDeviceNames,
+    }));
+
+    if (nOffs < 12) {
+        shouldBeOn = true;
+    }
 
     if (shouldBeOn !== currentValue) {
         let uri;
@@ -104,7 +124,7 @@ async function decideLights(currentValue, paramExecutionIdx) {
         const text = await result.text();
         console.log(`  - ${result.status} ${text}`);
     }
-    setTimeout(()=>decideLights(shouldBeOn, executionIdx+1), waitFor);
+    setTimeout(()=>decideLights(shouldBeOn, executionIdx+1, nOffs), waitFor);
 }
 
 decideLights();
