@@ -21,7 +21,6 @@ function ping(host) {
     return new Promise((resolve, reject) => {
         pingCb.sys.probe(host, {
             timeout: 5,
-            extra: ['-i', '2'],
         }, (isAlive, err)=>{
             if (err === null) {
                 resolve(isAlive);
