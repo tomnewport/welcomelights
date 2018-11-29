@@ -7,7 +7,7 @@ const webhookKey = process.env["IFTTT_WEBHOOK"];
 
 const macAddresses = {};
 
-const waitFor = 1000 * 60;
+const waitFor = 1000 * 15;
 
 Object.keys(process.env).filter(envVar=>envVar.startsWith('MAC_ADDRESS_'))
     .forEach(key=>{
