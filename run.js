@@ -53,8 +53,6 @@ async function listUpHosts() {
   return matchedUpDevices.filter(d=>d.isUp);
 }
 
-a = listUpHosts();
-
 function getWebHookURI(action) {
     return `https://maker.ifttt.com/trigger/${action}/with/key/${webhookKey}`
 }
@@ -66,7 +64,7 @@ function isHourValid() {
 
 async function decideLights(currentValue, paramExecutionIdx, paramNOffs) {
     const executionIdx = paramExecutionIdx || 0;
-    const nOffs = paramNOffs || 0;
+    let nOffs = paramNOffs || 0;
     const hourIsValid = isHourValid();
     const matchedDevices = await listUpHosts();
     let overrideHours = false;
