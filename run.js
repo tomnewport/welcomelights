@@ -19,7 +19,7 @@ Object.keys(process.env).filter(envVar=>envVar.startsWith('MAC_ADDRESS_'))
 
 const onHours = onHoursList.split(',').map(d=>parseInt(d));
 
-function singlePing(host) {
+function ping(host) {
     return new Promise((resolve, reject) => {
         pingCb.sys.probe(host,
           (isAlive, err)=>{
@@ -33,18 +33,6 @@ function singlePing(host) {
             timeout: 20,
         })
     });
-}
-
-async function ping(host, paramN) {
-    const n = paramN || 3;
-    for (let i=0; i<n; i++) {
-        if (await singlePing(host)) {
-            return true;
-        } else {
-            console.log(`Failed to ping host ${host} (${i})`);
-        }
-    }
-    return false;
 }
 
 async function listUpHosts() {
