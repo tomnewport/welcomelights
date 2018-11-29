@@ -1,3 +1,5 @@
+console.log('Started welcomelights service')
+
 const findDevices = require('local-devices');
 const fetch = require('node-fetch');
 const pingCb = require('ping');
