@@ -41,7 +41,7 @@ async function ping(host, paramN) {
         if (await singlePing(host)) {
             return true;
         } else {
-            console.log(`Failed to ping host ${host} (${paramN})`);
+            console.log(`Failed to ping host ${host} (${i})`);
         }
     }
     return false;
