@@ -32,6 +32,7 @@ function ping(host) {
 async function listUpHosts() {
   const devices = await findDevices();
   const matchedDevices = devices
+      .map(device=>{device.mac = device.mac.split(' ')[0]; return device;})
       .filter(device=>device.mac.toLowerCase() in macAddresses);
 
   const matchedUpDevices = await Promise.all(
