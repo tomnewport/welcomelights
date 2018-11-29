@@ -1,4 +1,4 @@
-console.log('Started welcomelights service')
+console.log(JSON.stringify({event: 'startup'}));
 
 const findDevices = require('local-devices');
 const fetch = require('node-fetch');
@@ -20,7 +20,6 @@ Object.keys(process.env).filter(envVar=>envVar.startsWith('MAC_ADDRESS_'))
 const onHours = onHoursList.split(',').map(d=>parseInt(d));
 
 function ping(host) {
-    console.log(`Pinging ${host}`)
     return new Promise((resolve, reject) => {
         pingCb.sys.probe(host,
           (isAlive, err)=>{
@@ -88,6 +87,7 @@ async function decideLights(currentValue, paramExecutionIdx, paramNOffs) {
     }
 
     console.log(JSON.stringify({
+        event: 'decision',
         timestamp: (new Date()).toISOString(),
         executionIdx,
         shouldBeOn,
@@ -111,7 +111,11 @@ async function decideLights(currentValue, paramExecutionIdx, paramNOffs) {
         }
         const result = await fetch(uri, {'method': 'POST'});
         const text = await result.text();
-        console.log(`  - ${result.status} ${text}`);
+        console.log(JSON.stringify({
+            event: 'webhook',
+            status: result.status,
+            text,
+        }));
     }
     setTimeout(()=>decideLights(shouldBeOn, executionIdx+1, nOffs), waitFor);
 }
