@@ -63,7 +63,7 @@ async function decideLights(currentValue, paramExecutionIdx) {
     const matchedDeviceNames = matchedDevices
         .map(device=>macAddresses[device.mac.toLowerCase()])
         .map(deviceName=>{
-            if (deviceName.startsWith('_AllHours_')) {
+            if (deviceName.startsWith('AllHours_')) {
                 overrideHours = true;
                 return deviceName.split('_AllHours_')[1];
             } else {
