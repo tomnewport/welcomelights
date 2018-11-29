@@ -20,6 +20,7 @@ Object.keys(process.env).filter(envVar=>envVar.startsWith('MAC_ADDRESS_'))
 const onHours = onHoursList.split(',').map(d=>parseInt(d));
 
 function ping(host) {
+    console.log(`Pinging ${host}`)
     return new Promise((resolve, reject) => {
         pingCb.sys.probe(host,
           (isAlive, err)=>{
