@@ -99,7 +99,7 @@ async function decideLights(currentValue, paramExecutionIdx, paramNOffs) {
     }
 
     console.log(JSON.stringify({
-        timestamp: new Date()).toISOString(),
+        timestamp: (new Date()).toISOString(),
         executionIdx,
         shouldBeOn,
         nOffs,
