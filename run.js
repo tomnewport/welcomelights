@@ -19,7 +19,10 @@ const onHours = onHoursList.split(',').map(d=>parseInt(d));
 
 function ping(host) {
     return new Promise((resolve, reject) => {
-        pingCb.sys.probe(host, (isAlive, err)=>{
+        pingCb.sys.probe(host, {
+            timeout: 20,
+            extra: ['-i', '2'],
+        }, (isAlive, err)=>{
             if (err === null) {
                 resolve(isAlive);
             } else {
