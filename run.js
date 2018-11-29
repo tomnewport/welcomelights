@@ -17,7 +17,7 @@ Object.keys(process.env).filter(envVar=>envVar.startsWith('MAC_ADDRESS_'))
 
 const onHours = onHoursList.split(',').map(d=>parseInt(d));
 
-function ping(host) {
+function singlePing(host) {
     return new Promise((resolve, reject) => {
         pingCb.sys.probe(host,
           (isAlive, err)=>{
@@ -33,6 +33,18 @@ function ping(host) {
     });
 }
 
+async function ping(host, paramN) {
+    const n = paramN || 3;
+    for (let i=0; i<n; i++) {
+        if (await singlePing(host)) {
+            return true;
+        } else {
+            console.log(`Failed to ping host ${host}`);
+        }
+    }
+    return false;
+}
+
 async function listUpHosts() {
   const devices = await findDevices();
   const matchedDevices = devices
@@ -40,8 +52,10 @@ async function listUpHosts() {
       .filter(device=>device.mac.toLowerCase() in macAddresses);
 
   const matchedUpDevices = await Promise.all(
-        matchedDevices.map(device=>{
-          return ping(device.ip).then(isUp=>{device.isUp = isUp; return device})
+        matchedDevices.map(async function(device) {
+          const isUp = await ping(device.ip);
+          device.isUp = isUp;
+          return device;
         })
   )
 
