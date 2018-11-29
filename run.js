@@ -7,6 +7,8 @@ const webhookKey = process.env["IFTTT_WEBHOOK"];
 
 const macAddresses = {};
 
+const waitFor = 1000 * 60;
+
 Object.keys(process.env).filter(envVar=>envVar.startsWith('MAC_ADDRESS_'))
     .forEach(key=>{
         const val = process.env[key];
@@ -73,7 +75,7 @@ async function decideLights(currentValue, paramExecutionIdx) {
         const text = await result.text();
         console.log(`  - ${result.status} ${text}`);
     }
-    setTimeout(()=>decideLights(shouldBeOn, executionIdx+1), 10);
+    setTimeout(()=>decideLights(shouldBeOn, executionIdx+1), waitFor);
 }
 
 decideLights();
