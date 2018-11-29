@@ -59,13 +59,23 @@ async function decideLights(currentValue, paramExecutionIdx) {
     const executionIdx = paramExecutionIdx || 0;
     const hourIsValid = isHourValid();
     const matchedDevices = await listUpHosts();
+    let overrideHours = false;
     const matchedDeviceNames = matchedDevices
-        .map(device=>macAddresses[device.mac.toLowerCase()]);
-    const shouldBeOn = (matchedDevices.length > 0 && hourIsValid);
+        .map(device=>macAddresses[device.mac.toLowerCase()])
+        .map(deviceName=>{
+            if (deviceName.startsWith('_AllHours_')) {
+                overrideHours = true;
+                return deviceName.split('_AllHours_')[1];
+            } else {
+                return deviceName;
+            }
+        });
 
-    console.log(`${executionIdx} ${(new Date()).toISOString()} ${shouldBeOn ? '🌕' : '🌑'} ${hourIsValid ? '✅' : '❎'} (${matchedDeviceNames.join(', ')})`)
+    const shouldBeOn = (matchedDevices.length > 0 && hourIsValid) || overrideHours;
 
-    if (shouldBeOn !== currentValue || (paramExecutionIdx % 60 == 0)) {
+    console.log(`${executionIdx} ${(new Date()).toISOString()} ${shouldBeOn ? '🌕' : '🌑'} ${overrideHours ? '❗ ' : ''}${hourIsValid ? '✅' : '❎'} (${matchedDeviceNames.join(', ')})`)
+
+    if (shouldBeOn !== currentValue) {
         let uri;
         if (shouldBeOn) {
             uri = getWebHookURI('tree_on');
