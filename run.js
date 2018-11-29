@@ -65,7 +65,7 @@ async function decideLights(currentValue, paramExecutionIdx) {
         .map(deviceName=>{
             if (deviceName.startsWith('AllHours_')) {
                 overrideHours = true;
-                return deviceName.split('_AllHours_')[1];
+                return `❗${deviceName.split('AllHours_')[1]}`;
             } else {
                 return deviceName;
             }
